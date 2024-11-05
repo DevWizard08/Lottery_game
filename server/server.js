@@ -18,7 +18,10 @@ app.use('/api', gridRoutes);
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "http://localhost:3000", // Allow only this origin
+        origin: [
+            'http://localhost:3000', // for local development
+            'https://glittering-jalebi-a7b89f.netlify.app' // your Netlify deployment
+          ],
         methods: ["GET", "POST"],
         credentials: true // Allow credentials if needed
     }
