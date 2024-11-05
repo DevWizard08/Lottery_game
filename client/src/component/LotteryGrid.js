@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000'); // Adjust the URL as necessary
+// Use the backend URL from environment variables
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+const socket = io(backendUrl); // Connect to your live backend
 
 const LotteryGrid = () => {
     const [gridUser1, setGridUser1] = useState(Array(3).fill().map(() => Array(3).fill(null)));
@@ -61,7 +63,7 @@ const LotteryGrid = () => {
 
     const submitGrid = async () => {
         try {
-            await axios.post('http://localhost:5000/api/start-game', { gridUser1, gridUser2 });
+            await axios.post(`${backendUrl}/api/start-game`, { gridUser1, gridUser2 });
             setIsGridSubmitted(true);
             alert("Grids submitted successfully! Now, press 'Start Game' to begin.");
         } catch (error) {
@@ -69,14 +71,14 @@ const LotteryGrid = () => {
         }
     };
 
-    const startGame = async () => {
+    const startGame = () => {
         if (!isGridSubmitted) {
             alert("Please submit the grids first.");
             return;
         }
         setNumbersDrawn([]); // Clear drawn numbers at the start of the game
         setIsGameActive(true);
-        await generateRandomNumbers(); // Start generating numbers
+        generateRandomNumbers();
     };
 
     const stopGame = () => {
@@ -135,7 +137,7 @@ const LotteryGrid = () => {
             ))}
             
             <button onClick={submitGrid} disabled={isGridSubmitted}>Submit Grid</button>
-            <button onClick={startGame} disabled={!isGridSubmitted}>Start Game</button>
+            <button onClick={startGame}>Start Game</button>
             <button onClick={stopGame} disabled={!isGameActive}>Stop Game</button>
             
             <div>
