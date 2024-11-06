@@ -50,13 +50,30 @@ const LotteryGrid = () => {
     };
 
     const handleInputChange = (row, col, value, user) => {
+        const numValue = parseInt(value);
+
+        // Check if the number is within the valid range (1-9)
+        if (numValue < 1 || numValue > 9 || isNaN(numValue)) {
+            alert("Please enter a number between 1 and 9.");
+            return;
+        }
+
+        // Check if the number is unique in the grid for the respective user
+        const grid = user === 1 ? gridUser1 : gridUser2;
+        const isDuplicate = grid.flat().includes(numValue);
+        if (isDuplicate) {
+            alert("This number is already in the grid. Please enter a unique number.");
+            return;
+        }
+
+        // Update the grid with the valid number
         if (user === 1) {
             const newGrid = gridUser1.map(r => [...r]);
-            newGrid[row][col] = parseInt(value);
+            newGrid[row][col] = numValue;
             setGridUser1(newGrid);
         } else {
             const newGrid = gridUser2.map(r => [...r]);
-            newGrid[row][col] = parseInt(value);
+            newGrid[row][col] = numValue;
             setGridUser2(newGrid);
         }
     };
